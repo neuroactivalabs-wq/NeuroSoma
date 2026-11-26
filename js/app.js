@@ -65,18 +65,13 @@
     }
     return id;
   }
-  let vipMemo = null;
-  function isVip() {
-    const c = store.get('vip');
-    if (vipMemo && vipMemo.c === c) return vipMemo.v;
-    const v = !!c && NSCode.norm(c) === NSCode.codeFor(CFG.SECRET, myId());
-    vipMemo = { c, v }; return v;
-  }
-  const locked = id => !isVip() && !FREE.has(id);
-  function tryUnlock(code) {
-    const c = NSCode.norm(code);
-    if (c === NSCode.codeFor(CFG.SECRET, myId())) { store.set('vip', c); vipMemo = null; return true; }
-    return false;
+  let vipOK = false;
+  const isVip = () => vipOK;
+  const locked = id => !vipOK && !FREE.has(id);
+  async function checkVip() { const c = store.get('vip'); vipOK = !!c && await NSCode.verify(CFG.PUBLIC_KEY, c, myId()); return vipOK; }
+  async function tryUnlock(code) {
+    if (!(await NSCode.verify(CFG.PUBLIC_KEY, code, myId()))) return false;
+    store.set('vip', NSCode.norm(code)); vipOK = true; return true;
   }
 
   /* ───────── música ───────── */
@@ -499,7 +494,7 @@
       <div class="stepn"><i>2</i><div style="flex:1"><b>Envíanos tu ID</b><br><span class="muted small">Es el código de este teléfono. Te devolvemos tu código de activación.</span><div class="codebox" style="margin:8px 0">${esc(id)}</div>
         <div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn sm ghost" style="border:2px solid var(--mist)" data-act="copyid" data-arg="${esc(id)}">${ic('content_copy', 20)}Copiar ID</button>${wa ? `<a class="btn sm" href="${wa}" target="_blank" rel="noopener">Enviar por WhatsApp</a>` : ''}</div></div></div>
       <div class="stepn"><i>3</i><div style="flex:1"><b>Escribe tu código</b>
-        <div class="field" style="margin-top:8px"><label for="vc" class="small" style="font-weight:400">Código de activación</label><input id="vc" type="text" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="XXXX-XXXX" style="letter-spacing:.15em;font-weight:600"></div>
+        <div class="field" style="margin-top:8px"><label for="vc" class="small" style="font-weight:400">Código de activación (pégalo completo)</label><textarea id="vc" rows="4" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="Pega aquí tu código" style="font-size:14px;word-break:break-all"></textarea></div>
         <p class="err" id="verr" hidden>Ese código no es válido para este teléfono. Revisa que esté bien escrito.</p>${btn('Activar VIP', 'vip-go')}</div></div>
       <p class="muted small">Tu código funciona solo en este teléfono. Si borras los datos del navegador, tu ID se mantiene en este dispositivo y puedes volver a escribir el mismo código.</p></div>` };
   };
@@ -552,9 +547,9 @@
       openModal(`<h3>¿Borrar este contacto?</h3><p>${esc(nm)}</p><div class="row" style="gap:10px"><button class="btn ghost" data-act="close">Cancelar</button><button class="btn" data-act="extra-del-ok" data-arg="${i}">Borrar</button></div>`);
     },
     'extra-del-ok'(el) { const l = extras(); l.splice(+el.dataset.arg, 1); store.set('extras', l); closeModal(); route(); },
-    'vip-go'() {
+    async 'vip-go'() {
       const v = document.getElementById('vc').value;
-      if (tryUnlock(v)) { toast('¡Listo! NeuroSoma VIP activado'); vibrate([60, 40, 60]); route(); } else document.getElementById('verr').hidden = false;
+      if (await tryUnlock(v)) { toast('¡Listo! NeuroSoma VIP activado'); vibrate([60, 40, 60]); route(); } else document.getElementById('verr').hidden = false;
     }
   };
   document.addEventListener('click', e => {
@@ -576,5 +571,5 @@
       }).catch(() => {});
     });
   }
-  route();
+  checkVip().then(route, route);
 })();
