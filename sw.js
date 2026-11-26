@@ -1,5 +1,5 @@
 /* NeuroSoma service worker */
-const V='ns-v4';
+const V='ns-v5';
 const ASSETS=["./", "audio/calma_1.mp3", "css/app.css", "fonts/Montserrat-Bold.woff2", "fonts/Montserrat-Light.woff2", "fonts/Montserrat-Medium.woff2", "fonts/Montserrat-Regular.woff2", "fonts/Montserrat-SemiBold.woff2", "icons/apple-touch-icon.png", "icons/favicon-32.png", "icons/icon-192.png", "icons/icon-512.png", "icons/maskable-512.png", "img/logo.png", "img/recurso_1.png", "img/recurso_2.png", "img/recurso_3.png", "js/app.js", "js/code.js", "js/config.js", "js/data.js", "js/icons.js", "manifest.webmanifest", "recursos/kit_1.png", "recursos/kit_1_t.jpg", "recursos/kit_2.png", "recursos/kit_2_t.jpg", "recursos/kit_3.png", "recursos/kit_3_t.jpg", "recursos/kit_4.png", "recursos/kit_4_t.jpg", "recursos/kit_5.png", "recursos/kit_5_t.jpg", "recursos/kit_6.png", "recursos/kit_6_t.jpg"];
 async function clean(res){if(!res||!res.redirected)return res;const b=await res.blob();return new Response(b,{status:200,statusText:'OK',headers:res.headers});}
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>Promise.all(ASSETS.map(a=>fetch(new Request(a,{cache:'reload'})).then(clean).then(r=>r&&r.ok&&c.put(a,r)).catch(()=>{})))));});

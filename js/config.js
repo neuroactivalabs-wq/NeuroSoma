@@ -4,9 +4,9 @@
    ============================================================ */
 window.CONFIG = {
   // Tu WhatsApp para recibir el ID del cliente. Solo números, con código de país. Ejemplo Panamá: "50761234567"
-  WA_NUMBER: "",
+  WA_NUMBER: "50764387978",
   // Enlace de tu catálogo donde se compra NeuroSoma VIP (EMP). Si lo dejas vacío, el botón de compra se oculta.
-  CATALOGO_URL: "",
+  CATALOGO_URL: "https://emp-neuroactiva.pages.dev/",
   // Precio que se muestra en la pantalla VIP
   PRECIO_TXT: "US$2.99",
   // Recursos imprimibles (1 al 6) que se pueden usar gratis. Los demás se abren con VIP.
