@@ -484,15 +484,16 @@
   R.vip = () => {
     const id = myId();
     if (isVip()) return { html: `${bar('NeuroSoma VIP')}<div class="wrap" style="text-align:center"><img src="img/logo.png" alt="" style="height:110px;width:auto;margin-top:10px"><div style="margin:10px 0">${wm(28)}<span class="badge">VIP</span></div><h2 style="font-size:24px;margin:14px 0 8px">Ya tienes NeuroSoma VIP</h2><p>Todos los ejercicios y recursos están abiertos. Gracias por apoyar este proyecto.</p><a class="btn" href="#/home">Ir al inicio</a></div>` };
-    const wa = CFG.WA_NUMBER ? `https://wa.me/${CFG.WA_NUMBER}?text=${encodeURIComponent('Hola, quiero activar NeuroSoma VIP. Mi ID es: ' + id)}` : '';
+    const wa = CFG.WA_NUMBER ? `https://wa.me/${CFG.WA_NUMBER}?text=${encodeURIComponent('Hola, quiero activar NeuroSoma VIP (' + (CFG.PRECIO_TXT || '') + ', pago único).\nYa pagué por: (PayPal / Yappy)\nMi ID es: ' + id + '\nTe envío el comprobante 👇')}` : '';
+    const paypal = CFG.PAYPAL_URL ? CFG.PAYPAL_URL.replace(/\/$/, '') + (CFG.PAYPAL_MONTO ? '/' + CFG.PAYPAL_MONTO : '') : '';
     return { html: `${bar('NeuroSoma VIP')}<div class="wrap">
       <div style="text-align:center"><img src="img/logo.png" alt="" style="height:100px;width:auto"><div style="margin:8px 0">${wm(26)}</div></div>
       <h2 style="font-size:24px;margin:12px 0">Abre todos los ejercicios</h2>
       <ul class="vip-list">${['Todos los ejercicios y situaciones, sin candados.', 'Un solo pago. Sin suscripción.', 'Funciona sin internet, siempre.', 'Los seis recursos imprimibles del kit.'].map(t => `<li>${ic('check_circle', 24)}<span>${t}</span></li>`).join('')}</ul>
       <div class="soft" style="text-align:center;font-weight:700;font-size:22px;color:var(--dark)">${esc(CFG.PRECIO_TXT || '')} <span class="muted small" style="font-weight:400">pago único</span></div>
-      <div class="stepn"><i>1</i><div style="flex:1"><b>Haz tu pago</b><br><span class="muted small">En nuestro catálogo.</span>${CFG.CATALOGO_URL ? `<div style="margin-top:8px"><a class="btn sm" href="${esc(CFG.CATALOGO_URL)}" target="_blank" rel="noopener">Ir al catálogo</a></div>` : ''}</div></div>
-      <div class="stepn"><i>2</i><div style="flex:1"><b>Envíanos tu ID</b><br><span class="muted small">Es el código de este teléfono. Te devolvemos tu código de activación.</span><div class="codebox" style="margin:8px 0">${esc(id)}</div>
-        <div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn sm ghost" style="border:2px solid var(--mist)" data-act="copyid" data-arg="${esc(id)}">${ic('content_copy', 20)}Copiar ID</button>${wa ? `<a class="btn sm" href="${wa}" target="_blank" rel="noopener">Enviar por WhatsApp</a>` : ''}</div></div></div>
+      <div class="stepn"><i>1</i><div style="flex:1"><b>Haz tu pago por PayPal o Yappy</b>${paypal ? `<div style="margin-top:8px"><a class="btn sm" href="${esc(paypal)}" target="_blank" rel="noopener">Pagar con PayPal</a></div>` : ''}${CFG.YAPPY ? `<p class="small" style="margin:10px 0 6px"><b>Yappy:</b> ${esc(CFG.YAPPY)}${CFG.YAPPY_NOMBRE ? ' · ' + esc(CFG.YAPPY_NOMBRE) : ''}</p><button class="btn sm ghost" style="border:2px solid var(--mist)" data-act="copyyappy" data-arg="${esc(CFG.YAPPY.replace(/\D/g, ''))}">${ic('content_copy', 20)}Copiar número de Yappy</button>` : ''}</div></div>
+      <div class="stepn"><i>2</i><div style="flex:1"><b>Envía tu comprobante y tu ID por WhatsApp</b><br><span class="muted small">Manda la captura del pago. El ID es el código de este teléfono: va en el mensaje. Te devolvemos tu código de activación.</span><div class="codebox" style="margin:8px 0">${esc(id)}</div>
+        <div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn sm ghost" style="border:2px solid var(--mist)" data-act="copyid" data-arg="${esc(id)}">${ic('content_copy', 20)}Copiar ID</button>${wa ? `<a class="btn sm" href="${wa}" target="_blank" rel="noopener">Enviar comprobante por WhatsApp</a>` : ''}</div></div></div>
       <div class="stepn"><i>3</i><div style="flex:1"><b>Escribe tu código</b>
         <div class="field" style="margin-top:8px"><label for="vc" class="small" style="font-weight:400">Código de activación (pégalo completo)</label><textarea id="vc" rows="4" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="Pega aquí tu código" style="font-size:14px;word-break:break-all"></textarea></div>
         <p class="err" id="verr" hidden>Ese código no es válido para este teléfono. Revisa que esté bien escrito.</p>${btn('Activar VIP', 'vip-go')}</div></div>
@@ -534,6 +535,7 @@
     mood(el) { store.set(dkey(new Date()), +el.dataset.arg); app.innerHTML = R.diario().html; },
     copynum(el) { copyText(el.dataset.arg, 'Número copiado: ' + el.dataset.arg + '. Márcalo en tu teléfono.'); },
     copyid(el) { copyText(el.dataset.arg, 'ID copiado'); },
+    copyyappy(el) { copyText(el.dataset.arg, 'Número de Yappy copiado'); },
     'c-save': saveContacts, 'c-skip'() { store.set('contacts', contacts()); location.hash = '#/home'; },
     'extra-edit'(el) { extraModal(el.dataset.arg); },
     'extra-save'(el) {
