@@ -491,7 +491,7 @@
       <h2 style="font-size:24px;margin:12px 0">Abre todos los ejercicios</h2>
       <ul class="vip-list">${['Todos los ejercicios y situaciones, sin candados.', 'Un solo pago. Sin suscripción.', 'Funciona sin internet, siempre.', 'Los seis recursos imprimibles del kit.'].map(t => `<li>${ic('check_circle', 24)}<span>${t}</span></li>`).join('')}</ul>
       <div class="soft" style="text-align:center;font-weight:700;font-size:22px;color:var(--dark)">${esc(CFG.PRECIO_TXT || '')} <span class="muted small" style="font-weight:400">pago único</span></div>
-      <div class="stepn"><i>1</i><div style="flex:1"><b>Haz tu pago por PayPal o Yappy</b>${paypal ? `<div style="margin-top:8px"><a class="btn sm" href="${esc(paypal)}" target="_blank" rel="noopener">Pagar con PayPal</a></div>` : ''}${CFG.YAPPY ? `<p class="small" style="margin:10px 0 6px"><b>Yappy:</b> ${esc(CFG.YAPPY)}${CFG.YAPPY_NOMBRE ? ' · ' + esc(CFG.YAPPY_NOMBRE) : ''}</p><button class="btn sm ghost" style="border:2px solid var(--mist)" data-act="copyyappy" data-arg="${esc(CFG.YAPPY.replace(/\D/g, ''))}">${ic('content_copy', 20)}Copiar número de Yappy</button>` : ''}</div></div>
+      <div class="stepn"><i>1</i><div style="flex:1"><b>Haz tu pago por PayPal o Yappy</b>${paypal ? `<div style="margin-top:8px"><a class="btn sm" href="${esc(paypal)}" target="_blank" rel="noopener">Pagar con PayPal</a></div>` : ''}${CFG.YAPPY_URL ? `<div style="margin-top:8px"><a class="btn sm" href="${esc(CFG.YAPPY_URL)}" target="_blank" rel="noopener">Pagar con Yappy</a></div>` : CFG.YAPPY ? `<p class="small" style="margin:10px 0 6px"><b>Yappy</b> a nombre de ${esc(CFG.YAPPY_NOMBRE || '')}</p><button class="btn sm ghost" style="border:2px solid var(--mist)" data-act="copyyappy">Pagar con Yappy</button><p class="muted small" style="margin:6px 0 0">Se copia el Yappy de ${esc(CFG.YAPPY_NOMBRE || '')}: abre tu app Yappy, toca Enviar y pégalo.</p>` : ''}</div></div>
       <div class="stepn"><i>2</i><div style="flex:1"><b>Envía tu comprobante y tu ID por WhatsApp</b><br><span class="muted small">Manda la captura del pago. El ID es el código de este teléfono: va en el mensaje. Te devolvemos tu código de activación.</span><div class="codebox" style="margin:8px 0">${esc(id)}</div>
         <div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn sm ghost" style="border:2px solid var(--mist)" data-act="copyid" data-arg="${esc(id)}">${ic('content_copy', 20)}Copiar ID</button>${wa ? `<a class="btn sm" href="${wa}" target="_blank" rel="noopener">Enviar comprobante por WhatsApp</a>` : ''}</div></div></div>
       <div class="stepn"><i>3</i><div style="flex:1"><b>Escribe tu código</b>
@@ -535,7 +535,7 @@
     mood(el) { store.set(dkey(new Date()), +el.dataset.arg); app.innerHTML = R.diario().html; },
     copynum(el) { copyText(el.dataset.arg, 'Número copiado: ' + el.dataset.arg + '. Márcalo en tu teléfono.'); },
     copyid(el) { copyText(el.dataset.arg, 'ID copiado'); },
-    copyyappy(el) { copyText(el.dataset.arg, 'Número de Yappy copiado'); },
+    copyyappy() { const n = String(CFG.YAPPY).replace(/\D/g, ''); (navigator.clipboard ? navigator.clipboard.writeText(n) : Promise.reject()).then(() => toast('Yappy de ' + (CFG.YAPPY_NOMBRE || '') + ' copiado: pégalo en tu app Yappy'), () => toast('No pude copiar. Escríbenos por WhatsApp y te ayudamos.')); },
     'c-save': saveContacts, 'c-skip'() { store.set('contacts', contacts()); location.hash = '#/home'; },
     'extra-edit'(el) { extraModal(el.dataset.arg); },
     'extra-save'(el) {

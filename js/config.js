@@ -8,8 +8,9 @@ window.CONFIG = {
   // Cómo se paga NeuroSoma VIP: PayPal o Yappy. El comprobante y el ID se envían por WhatsApp (WA_NUMBER).
   PAYPAL_URL: "https://paypal.me/jesusbarrios06",
   PAYPAL_MONTO: "2.99USD",
-  YAPPY: "6768-4866",
+  YAPPY: "67684866",        // no se muestra en pantalla: el botón lo copia para pegarlo en Yappy
   YAPPY_NOMBRE: "Jesus Barrios",
+  YAPPY_URL: "",            // si tienes enlace de cobro de Yappy, ponlo aquí y el botón lo abre
   // Precio que se muestra en la pantalla VIP
   PRECIO_TXT: "US$2.99",
   // Recursos imprimibles (1 al 6) que se pueden usar gratis. Los demás se abren con VIP.
